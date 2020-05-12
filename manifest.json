@@ -10,9 +10,11 @@
     }
   ],
   "permissions": ["storage", "activeTab"],
+  "web_accessible_resources": ["style.css"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
+      "css": ["style.css"],
       "js": ["jquery-3.5.1.js", "content.js"],
       "run_at": "document_end"
     }
