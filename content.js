@@ -1,16 +1,39 @@
 let st = chrome.storage.sync
-let keys = []
+let keys = [ ]
 let settings = {}
 
 st.get(item => {
     keys = item.keywords
+    if(keys !== undefined) {
+        st.set({
+            ...st,
+            keys
+        })
+    } else {
+        st.set({
+            ...st,
+            keywords: [
+                'умрёт', 'победит', 'проиграет', 'убьет', 'Ведьмак', 'Ходячие мертвецы', 'Игра Престолов'
+            ]
+        })
+    }
+
     settings = item.settings
+    if (settings !== undefined) {
+        st.set({
+            ...st,
+            settings
+        })
+    } else {
+        st.set({
+            ...st,
+            settings: {
+                s1: true, s2: true, s3: true
+            }
+        })
+    }
 })
 
-st.set({
-    ...st,
-    ...settings
-})
 
 $(function () {
     for (let i in keys) {
@@ -22,7 +45,8 @@ $(function () {
     console.log(settings['s2'])
     console.log(settings['s3'])
 
-    let keysCount = keys.length
+    let keysCount
+    keys !== undefined ?  keysCount = keys.length : keysCount = 0
     let counter = 0
     function parserGo() {
         analysisSite(document)
