@@ -13,7 +13,7 @@
   "web_accessible_resources": ["style.css"],
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["https://www.vk.com/im*", "https://vk.com/im*", "https://www.yandex.ru/search*", "https://yandex.ru/search*", "https://www.google.ru/*", "https://www.google.com/search*", "https://google.com/search*", "https://google.ru/search*"],
       "css": ["style.css"],
       "js": ["jquery-3.5.1.js", "content.js"],
       "run_at": "document_end"
