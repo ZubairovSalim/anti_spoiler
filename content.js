@@ -1,6 +1,8 @@
 let st = chrome.storage.sync
 let keys = [ ]
-let settings = {}
+let  settings = {
+    s1: true, s2: true, s3: true
+}
 
 st.get(item => {
     keys = item.keywords
@@ -25,11 +27,13 @@ st.get(item => {
             settings
         })
     } else {
+        settings = {
+            s1: true, s2: true, s3: true
+        }
+
         st.set({
             ...st,
-            settings: {
-                s1: true, s2: true, s3: true
-            }
+            settings
         })
     }
 })
