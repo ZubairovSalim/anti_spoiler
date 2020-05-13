@@ -1,19 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Anti Spoiler</title>
     <link rel="stylesheet" href="style.css">
     <script src="jquery-3.5.1.js"></script>
     <script src="popup.js"></script>
     <script src="content.js"></script>
 </head>
+
 <body>
-    <div id="keyword-list"></div>
-    <label>Enter new keyword:</label>
-    <div class='main'>
-        <input id="new-keyword" type="text" />
-        <button id="add-keyword">+</button>
+    <div class="header">
+        <label>Anti-Spoiler v1.0 <br> Github: <a target="_blank"
+                href="https://github.com/ZubairovSalim/anti_spoiler">anti_spoiler</a>
+        </label>
+        <a href="#" id='changePage'>settings</a>
+    </div>
+
+    <div id='main'>
+        <div id="keyword-list"></div>
+        <label>Enter new keyword:</label>
+        <div class='main'>
+            <input id="new-keyword" type="text" />
+            <button class="add" id="add-keyword">+</button>
+        </div>
+    </div>
+
+
+    <div class="settings" id='settings' style='display: none;'>
+        <label class="label">
+            <div class="toggle">
+                <input name='s1' id='setting1' class="toggle-state" type="checkbox" />
+                <div class="toggle-inner">
+                    <div class="indicator"></div>
+                </div>
+                <div class="active-bg"></div>
+            </div>
+            <div class="label-text">hide google search results by keywords</div>
+        </label>
+
+        <label class="label">
+            <div class="toggle">
+                <input name='s2' id='setting2' class="toggle-state" type="checkbox" />
+                <div class="toggle-inner">
+                    <div class="indicator"></div>
+                </div>
+                <div class="active-bg"></div>
+            </div>
+            <div class="label-text">hide yandex search results by keywords</div>
+        </label>
+
+        <label class="label">
+            <div class="toggle">
+                <input name='s3' id='setting3' class="toggle-state" type="checkbox" />
+                <div class="toggle-inner">
+                    <div class="indicator"></div>
+                </div>
+                <div class="active-bg"></div>
+            </div>
+            <div class="label-text">hide VK messages by keywords</div>
+        </label>
     </div>
 </body>
+
 </html>
