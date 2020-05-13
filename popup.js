@@ -1,5 +1,14 @@
 let storage = chrome.storage.sync;
-let keywords = [];
+let keywords = [
+    'умрёт', 'победит', 'проиграет', 'убьет', 'Ведьмак', 'Ходячие мертвецы', 'Игра Престолов'
+]
+
+storage.set({
+    ...storage,
+   ...keywords
+})
+
+
 
 $(function(){
     function updateKeywordsListNode() {
@@ -7,7 +16,7 @@ $(function(){
             if (items.keywords) {
                 keywords = items.keywords.slice();
                 let nodeList = items.keywords.map((keyword, index) =>
-                    "<li id=" + "key" + index + " style='list-style: none; display: flex; justify-content: space-between '>" +
+                    "<li id=" + "key" + index + " class='keyword-item'>" +
                     keyword + "<button id="+ "b" + index + " class='del-keyword'>-</button</li>");
                 $("#keyword-list").html(nodeList);
             }
