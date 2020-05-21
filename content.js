@@ -1,12 +1,12 @@
 let st = chrome.storage.sync
-let keys = [ ]
-let  settings = {
+let keys = []
+let settings = {
     s1: true, s2: true, s3: true
 }
 
 st.get(item => {
     keys = item.keywords
-    if(keys !== undefined) {
+    if (keys !== undefined) {
         st.set({
             ...st,
             keys
@@ -50,7 +50,7 @@ $(function () {
     console.log(settings['s3'])
 
     let keysCount
-    keys !== undefined ?  keysCount = keys.length : keysCount = 0
+    keys !== undefined ? keysCount = keys.length : keysCount = 0
     let counter = 0
     function parserGo() {
         analysisSite(document)
@@ -58,21 +58,32 @@ $(function () {
 
     function blurContent(data, block) {
         $(data).find(block).each(function () {
-            let link = data.location.hostname
-            let html = `<div class='spoiler' id='spoiler${counter}'>SPOILER ALERT <a href='#' id='showLink_${counter}' class='showLink' alt='' >show</a></div>`
             //google
-            if (checkKeywords($(this).find('span.st'))) {
-                $(this).find('span.st').addClass(['blurClass'])
+            let googleKeysCount = checkKeywords($(this).find('span.st'))
+            let yandexKeysCount = checkKeywords($(this).find('div.organic__text'))
+            if (googleKeysCount) {
+                let blurClass = writeBlurClass(googleKeysCount)
+
+                // $(this).find('span.st').addClass([`${blurClass}`])
                 $(this).find('span.st').attr('id', `showText${counter}`)
-                $(this).append(html)
+                $(this).append(generateHtml(counter, `Keys count: ${googleKeysCount}` , `googleStylesClass  ${blurClass}`))
+
                 counter += 1
             }
             //yandex
-            $(this).find('label.extended-text').addClass(['blurClass'])
-            $(this).find('label.extended-text').attr('id', `showText${counter}`)
-            $(this).find('div.organic__text').addClass(['blurClass'])
-            $(this).find('div.organic__text').attr('id', `showText${counter}`)
+            if (yandexKeysCount) {
+                let blurClass = writeBlurClass(yandexKeysCount)
 
+
+                // $(this).find('label.extended-text').addClass([`${blurClass}`])
+                $(this).find('label.extended-text').attr('id', `showText${counter}`)
+                // $(this).find('div.organic__text').addClass([`${blurClass}`])
+                $(this).find('div.organic__text').attr('id', `showText${counter}`)
+                // $(this).find(div.thumb__handle).attr('display', 'none')
+                $(this).append(generateHtml(counter, `Keys count: ${yandexKeysCount}`, `yandexStylesClass ${blurClass}`))
+
+                counter += 1
+            }
 
             //vk - coming soon
             //------
@@ -88,6 +99,43 @@ $(function () {
         } else {
             return 'yandex'
         }
+    }
+
+    function generateHtml(counter, label, className = '') {
+
+        return `
+                <div class='spoiler ${className}' id='spoiler${counter}'>
+                    SPOILER ALERT
+                    <label>${label}</label>
+                    <a href='#' style='color: #5fa9ee; text-decoration: none;' id='showLink_${counter}' class='showLink' alt='' >
+                        show ➕
+                    </a>
+                </div>
+            `
+    }
+
+    function writeBlurClass(socialKeysCount, classOfBlur = 'blurClass') {
+
+        //ДЛЯ ПРОДА
+        // if (socialKeysCount = 1) {
+        //     classOfBlur += '_1'
+        // } else if (2 <= socialKeysCount <= 5) {
+        //     classOfBlur += '_2'
+        // } else if (6 <= socialKeysCount) {
+        //     classOfBlur += '_3'
+        // }
+
+
+        //ДЛЯ ТЕСТА
+        if (socialKeysCount === 1) {
+            classOfBlur += '_1'
+        } else if (2 >= socialKeysCount) {
+            classOfBlur += '_2'
+        } else if (3 <= socialKeysCount) {
+            classOfBlur += '_3'
+        }
+
+        return classOfBlur
     }
 
     function analysisSite(data) {
@@ -112,7 +160,13 @@ $(function () {
 
     function checkKeywords(node) {
         let content = node.text().toLowerCase();
-        return keys.some(key => content.includes(key));
+        let count = 0
+        if (keys !== undefined) {
+            for (let i in keys) {
+                content.includes(keys[i]) ? count++ : null
+            }
+            return count
+        }
     }
 
     parserGo()
@@ -140,9 +194,11 @@ $(function () {
     $(`a.showLink`).on("click", e => {
         let id = e.target.id.split('_')[1]
         e.preventDefault()
-        $(document).find(`span#showText${id}`).removeClass('blurClass')
-        $(document).find(`label#showText${id}`).removeClass('blurClass')
-        $(document).find(`div#showText${id}`).removeClass('blurClass')
+        for (let i = 1; i <= 100; i++) {
+            $(document).find(`span#showText${id}`).removeClass(`blurClass_${i}`)
+            $(document).find(`label#showText${id}`).removeClass(`blurClass_${i}`)
+            $(document).find(`div#showText${id}`).removeClass(`blurClass_${i}`)
+        }
         $(document).find(`div#spoiler${id}`).css('display', 'none')
         return false
     });

@@ -4,20 +4,50 @@ body {
   font-size: 14px;
   padding: 5px;
 }
-
 .spoiler {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;   
   position: absolute;
-  top: 50px;
-  left: 100px;
+  
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 0px #000;
+  left: 0px;
   font-size: 20px;
   font-weight: bold;
+  font-style: italic;
   z-index: 99999;
   margin-top: 5px;
-  /* width: 100%;
-  height: 100%; */
-  /* background: #ccc;
-  backdrop-filter: blur(2px); */
 }
+
+.spoiler.googleStylesClass {
+  width: 600px;
+  top: 50px;
+}
+
+.spoiler.yandexStylesClass {
+  top: 40px;
+  width: 500px;
+}
+
+.spoiler.vkStylesClass {
+  /*  */
+}
+
+a.showLink {
+  color: #5fa9ee;
+  text-decoration: none;
+}
+
+
 
 .header {
   display: flex;
@@ -32,8 +62,54 @@ body {
   margin-bottom: 10px;
 }
 
-.blurClass {
-  filter: blur(2px);
+
+
+
+.blurClass_1::before {
+  content: " ";
+  width: 25px;
+  height: 25px;
+  background-image: url('https://emojio.ru/images/apple-m/12.0/1f7e2.png');
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
+}
+
+.blurClass_2::before {
+  content: " ";
+  width: 25px;
+  height: 25px;
+  background-image: url('https://emojio.ru/images/apple-m/26a0.png');
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
+}
+
+
+.blurClass_3::before {
+  content: " ";
+  width: 25px;
+  height: 25px;
+  /* background-image: url('https://emojio.ru/images/apple-m/1f534.png'); */
+  background-image: url('https://vk.com/emoji/e/e29b94_2x.png');
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
+}
+
+.blurClass_1 {
+  backdrop-filter: blur(100px);
+  color: green; 
+  
+}
+
+
+.blurClass_2 {
+  backdrop-filter: blur(100px);
+  color: #9039fd; 
+  /* text-shadow: 1px 1px 0px red; */
+}
+
+.blurClass_3 {
+  backdrop-filter: blur(100px);
+  color: red; 
 }
 
 #new-keyword {
@@ -88,24 +164,14 @@ body {
   padding-top: 10px;
 }
 
-a,
-a:visited {
-  color: #003dda;
-}
-
 .settings {
   display: flex;
   flex-direction: column;
 }
 
-
-
-
-
-
-
-
-
+a:visited {
+  text-decoration: none;
+}
 
 
 
