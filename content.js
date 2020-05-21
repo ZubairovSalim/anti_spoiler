@@ -61,16 +61,19 @@ $(function () {
             let link = data.location.hostname
             let html = `<div class='spoiler' id='spoiler${counter}'>SPOILER ALERT <a href='#' id='showLink_${counter}' class='showLink' alt='' >show</a></div>`
             //google
-            $(this).find('span.st').addClass(['blurClass'])
-            $(this).find('span.st').attr('id', `showText${counter}`)
+            if (checkKeywords($(this).find('span.st'))) {
+                $(this).find('span.st').addClass(['blurClass'])
+                $(this).find('span.st').attr('id', `showText${counter}`)
+                $(this).append(html)
+                counter += 1
+            }
             //yandex
             $(this).find('label.extended-text').addClass(['blurClass'])
             $(this).find('label.extended-text').attr('id', `showText${counter}`)
             $(this).find('div.organic__text').addClass(['blurClass'])
             $(this).find('div.organic__text').attr('id', `showText${counter}`)
 
-            $(this).append(html)
-            counter += 1
+
             //vk - coming soon
             //------
 
@@ -105,6 +108,11 @@ $(function () {
                 break
             default: console.log('def'); break
         }
+    }
+
+    function checkKeywords(node) {
+        let content = node.text().toLowerCase();
+        return keys.some(key => content.includes(key));
     }
 
     parserGo()
