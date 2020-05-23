@@ -1,4 +1,4 @@
-body {
+.antispoiler-body {
   height: 300px;
   width: 500px;
   font-size: 14px;
@@ -39,7 +39,8 @@ body {
 }
 
 .spoiler.vkStylesClass {
-  /*  */
+  top: 40px;
+  width: 500px;
 }
 
 a.showLink {
