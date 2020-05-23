@@ -61,7 +61,7 @@ $(function () {
     if (settings['s3'] && (document.location.href.substring(document.location.href.lastIndexOf('/') + 1)).includes("feed")) {
         console.log("add");
         document.addEventListener('scroll', function (e) {
-            debouncedVkBlur()
+            debouncedVkBlur();
         }, true);
     }
 
@@ -219,6 +219,25 @@ $(function () {
 
     let debouncedVkBlur = debounce(blurVk, 150);
 
+    function blurVkOnScroll() {
+        blurVk();
+        // Not sure about this
+        $(`a.showLink`).off("click");
+
+        $(`a.showLink`).on("click", e => {
+            let id = e.target.id.split('_')[1];
+            console.log(id);
+            e.preventDefault();
+            for (let i = 1; i <= 100; i++) {
+                $(document).find(`span#showText${id}`).removeClass(`blurClass_${i}`)
+                $(document).find(`label#showText${id}`).removeClass(`blurClass_${i}`)
+                $(document).find(`div#showText${id}`).removeClass(`blurClass_${i}`)
+            }
+            $(document).find(`div#spoiler${id}`).css('display', 'none')
+            return false
+        });
+    }
+
     function blurVk() {
         blurContent(document, vkSearchClass);
         console.log(hiddenVkPosts)
@@ -264,8 +283,9 @@ $(function () {
 
 
     $(`a.showLink`).on("click", e => {
-        let id = e.target.id.split('_')[1]
-        e.preventDefault()
+        let id = e.target.id.split('_')[1];
+        console.log(id);
+        e.preventDefault();
         for (let i = 1; i <= 100; i++) {
             $(document).find(`span#showText${id}`).removeClass(`blurClass_${i}`)
             $(document).find(`label#showText${id}`).removeClass(`blurClass_${i}`)
