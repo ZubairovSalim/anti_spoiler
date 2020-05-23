@@ -1,11 +1,12 @@
-let st = chrome.storage.sync
-let keys = []
+let st = chrome.storage.sync;
+let keys = [];
 let settings = {
     s1: true, s2: true, s3: true
-}
+};
+
 
 st.get(item => {
-    keys = item.keywords
+    keys = item.keywords;
     if (keys !== undefined) {
         st.set({
             ...st,
@@ -20,7 +21,7 @@ st.get(item => {
         })
     }
 
-    settings = item.settings
+    settings = item.settings;
     if (settings !== undefined) {
         st.set({
             ...st,
@@ -29,14 +30,21 @@ st.get(item => {
     } else {
         settings = {
             s1: true, s2: true, s3: true
-        }
+        };
 
         st.set({
             ...st,
             settings
         })
     }
-})
+});
+
+
+// List of classes which can contain spoilers
+const vkSearchClass = "div._post";
+
+// Map to store already hidden posts
+const hiddenVkPosts = {};
 
 
 $(function () {
@@ -45,48 +53,80 @@ $(function () {
     }
 
     console.log(keys);
-    console.log(settings['s1'])
-    console.log(settings['s2'])
-    console.log(settings['s3'])
+    console.log(settings['s1']);
+    console.log(settings['s2']);
+    console.log(settings['s3']);
 
-    let keysCount
-    keys !== undefined ? keysCount = keys.length : keysCount = 0
-    let counter = 0
+    // Add event listener to dynamically blur vk feed posts
+    if (settings['s3'] && (document.location.href.substring(document.location.href.lastIndexOf('/') + 1)).includes("feed")) {
+        console.log("add");
+        document.addEventListener('scroll', function (e) {
+            debouncedVkBlur()
+        }, true);
+    }
+
+    let keysCount;
+    keys !== undefined ? keysCount = keys.length : keysCount = 0;
+    let counter = 0;
+
+
     function parserGo() {
         analysisSite(document)
     }
 
     function blurContent(data, block) {
         $(data).find(block).each(function () {
-            //google
-            let googleKeysCount = checkKeywords($(this).find('span.st'))
-            let yandexKeysCount = checkKeywords($(this).find('div.organic__text'))
+            if (this.id in hiddenVkPosts){
+                console.log("already hide");
+                return
+            }
+            let googleKeysCount = checkKeywords($(this).find('span.st'));
+            let yandexKeysCount = checkKeywords($(this).find('div.organic__text'));
+            let vkKeysCount = checkKeywords($(this).find('div.wall_post_text'));
+
             if (googleKeysCount) {
-                let blurClass = writeBlurClass(googleKeysCount)
+                let blurClass = writeBlurClass(googleKeysCount);
 
                 // $(this).find('span.st').addClass([`${blurClass}`])
-                $(this).find('span.st').attr('id', `showText${counter}`)
-                $(this).append(generateHtml(counter, `Keys count: ${googleKeysCount}` , `googleStylesClass  ${blurClass}`))
+                $(this).find('span.st').attr('id', `showText${counter}`);
+                $(this).append(generateHtml(counter, `Keys count: ${googleKeysCount}` , `googleStylesClass  ${blurClass}`));
 
                 counter += 1
             }
-            //yandex
+            // yandex
             if (yandexKeysCount) {
-                let blurClass = writeBlurClass(yandexKeysCount)
+                let blurClass = writeBlurClass(yandexKeysCount);
 
 
                 // $(this).find('label.extended-text').addClass([`${blurClass}`])
-                $(this).find('label.extended-text').attr('id', `showText${counter}`)
+                $(this).find('label.extended-text').attr('id', `showText${counter}`);
                 // $(this).find('div.organic__text').addClass([`${blurClass}`])
-                $(this).find('div.organic__text').attr('id', `showText${counter}`)
+                $(this).find('div.organic__text').attr('id', `showText${counter}`);
                 // $(this).find(div.thumb__handle).attr('display', 'none')
-                $(this).append(generateHtml(counter, `Keys count: ${yandexKeysCount}`, `yandexStylesClass ${blurClass}`))
+                $(this).append(generateHtml(counter, `Keys count: ${yandexKeysCount}`, `yandexStylesClass ${blurClass}`));
 
                 counter += 1
             }
 
-            //vk - coming soon
-            //------
+            if (vkKeysCount) {
+                let blurClass = writeBlurClass(vkKeysCount);
+                const el = $(this).find('div.wall_post_text');
+                if (el){
+                    let h = $(this).height() - 70;
+                    let w = $(this).width();
+                    console.log(w);
+                    if (h < 50){
+                        h = 50
+                    }
+                    if (w < 50) {
+                        w = 500
+                    }
+                    el.attr('id', `showText${counter}`);
+                    $(this).append(generateHtml(counter, `Keys count: ${vkKeysCount}`, `vkStylesClass ${blurClass}`, `width: ${w}px; height: ${h}px`));
+                    counter += 1;
+                    hiddenVkPosts[this.id] = 1
+                }
+            }
 
         })
     }
@@ -101,10 +141,10 @@ $(function () {
         }
     }
 
-    function generateHtml(counter, label, className = '') {
-
+    function generateHtml(counter, label, className = '', dynamicStyle=null) {
+        console.log(dynamicStyle ? dynamicStyle : "");
         return `
-                <div class='spoiler ${className}' id='spoiler${counter}'>
+                <div class='spoiler ${className}' id='spoiler${counter}' style='${dynamicStyle ? dynamicStyle : ""}'>
                     SPOILER ALERT
                     <label>${label}</label>
                     <a href='#' style='color: #5fa9ee; text-decoration: none;' id='showLink_${counter}' class='showLink' alt='' >
@@ -139,37 +179,69 @@ $(function () {
     }
 
     function analysisSite(data) {
-
-        let link = data.location.hostname
-        link = link.toString()
-        let checked = checkLink(link)
+        let link = data.location.hostname;
+        link = link.toString();
+        let checked = checkLink(link);
 
         switch (checked) {
             case 'google':
-                settings['s1'] ? blurContent(data, 'div.s') : null
-                break
+                settings['s1'] ? blurContent(data, 'div.s') : null;
+                break;
             case 'yandex':
-                settings['s2'] ? blurContent(data, 'div.organic__content-wrapper') : null
-                break
+                settings['s2'] ? blurContent(data, 'div.organic__content-wrapper') : null;
+                break;
             case 'vk':
-                console.log('www.vk.com')
+               if (settings['s3']){
+                   blurVk()
+                }
+                break;
+            default:
+                console.log('def');
                 break
-            default: console.log('def'); break
         }
+
+        console.log("Anal finished");
     }
 
     function checkKeywords(node) {
         let content = node.text().toLowerCase();
-        let count = 0
+        let count = 0;
         if (keys !== undefined) {
             for (let i in keys) {
-                content.includes(keys[i]) ? count++ : null
+                if (content.includes(keys[i])){
+                    console.log(content);
+                    count++
+                }
             }
             return count
         }
     }
 
-    parserGo()
+    let debouncedVkBlur = debounce(blurVk, 150);
+
+    function blurVk() {
+        blurContent(document, vkSearchClass);
+        console.log(hiddenVkPosts)
+    }
+
+    function debounce(func, wait, immediate) {
+        console.log("debo");
+        let timeout;
+        return function () {
+            let context = this, args = arguments;
+            let later = function () {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            let callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
+
+
+    parserGo();
 
 
 
@@ -250,4 +322,5 @@ $(function () {
         }
         // console.log(s)
     })
-})
+});
+
