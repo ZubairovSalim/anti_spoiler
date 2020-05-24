@@ -62,7 +62,9 @@ a.showLink {
   margin-bottom: 10px;
 }
 
-
+.blurClass {
+  filter: blur(5px);
+}
 
 
 .blurClass_1::before {

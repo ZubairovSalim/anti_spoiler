@@ -76,7 +76,7 @@ $(function () {
 
     function blurContent(data, block) {
         $(data).find(block).each(function () {
-            if (this.id in hiddenVkPosts){
+            if (this.id in hiddenVkPosts) {
                 console.log("already hide");
                 return
             }
@@ -87,9 +87,9 @@ $(function () {
             if (googleKeysCount) {
                 let blurClass = writeBlurClass(googleKeysCount);
 
-                // $(this).find('span.st').addClass([`${blurClass}`])
+                $(this).siblings().addClass([`blurClass header${counter}`])
                 $(this).find('span.st').attr('id', `showText${counter}`);
-                $(this).append(generateHtml(counter, `Keys count: ${googleKeysCount}` , `googleStylesClass  ${blurClass}`));
+                $(this).append(generateHtml(counter, `Keys count: ${googleKeysCount}`, `googleStylesClass  ${blurClass}`));
 
                 counter += 1
             }
@@ -98,6 +98,7 @@ $(function () {
                 let blurClass = writeBlurClass(yandexKeysCount);
 
 
+                $(this).siblings().addClass([`blurClass header${counter}`])
                 // $(this).find('label.extended-text').addClass([`${blurClass}`])
                 $(this).find('label.extended-text').attr('id', `showText${counter}`);
                 // $(this).find('div.organic__text').addClass([`${blurClass}`])
@@ -111,11 +112,11 @@ $(function () {
             if (vkKeysCount) {
                 let blurClass = writeBlurClass(vkKeysCount);
                 const el = $(this).find('div.wall_post_text');
-                if (el){
+                if (el) {
                     let h = $(this).height() - 70;
                     let w = $(this).width();
                     console.log(w);
-                    if (h < 50){
+                    if (h < 50) {
                         h = 50
                     }
                     if (w < 50) {
@@ -141,7 +142,7 @@ $(function () {
         }
     }
 
-    function generateHtml(counter, label, className = '', dynamicStyle=null) {
+    function generateHtml(counter, label, className = '', dynamicStyle = null) {
         console.log(dynamicStyle ? dynamicStyle : "");
         return `
                 <div class='spoiler ${className}' id='spoiler${counter}' style='${dynamicStyle ? dynamicStyle : ""}'>
@@ -191,8 +192,8 @@ $(function () {
                 settings['s2'] ? blurContent(data, 'div.organic__content-wrapper') : null;
                 break;
             case 'vk':
-               if (settings['s3']){
-                   blurVk()
+                if (settings['s3']) {
+                    blurVk()
                 }
                 break;
             default:
@@ -208,7 +209,7 @@ $(function () {
         let count = 0;
         if (keys !== undefined) {
             for (let i in keys) {
-                if (content.includes(keys[i])){
+                if (content.includes(keys[i])) {
                     console.log(content);
                     count++
                 }
@@ -287,6 +288,8 @@ $(function () {
         console.log(id);
         e.preventDefault();
         for (let i = 1; i <= 100; i++) {
+            $(document).find(`div.header${id}`).removeClass([`${'blurClass'}`])
+            $(document).find(`h2.header${id}`).removeClass([`${'blurClass'}`])
             $(document).find(`span#showText${id}`).removeClass(`blurClass_${i}`)
             $(document).find(`label#showText${id}`).removeClass(`blurClass_${i}`)
             $(document).find(`div#showText${id}`).removeClass(`blurClass_${i}`)
