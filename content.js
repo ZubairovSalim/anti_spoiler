@@ -218,7 +218,7 @@ $(function () {
         }
     }
 
-    let debouncedVkBlur = debounce(blurVk, 150);
+    let debouncedVkBlur = debounce(blurVkOnScroll, 150);
 
     function blurVkOnScroll() {
         blurVk();
